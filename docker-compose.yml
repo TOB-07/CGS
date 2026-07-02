@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+
+    ports:
+      - "8333:8333"
+      - "8888:8888"
+      - "9333:9333"
+      - "23646:23646"
+    
+    volumes:
+      - ./data/seaweedfs_str/:/data
+
+    restart: unless-stopped

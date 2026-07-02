@@ -1,0 +1,27 @@
+{
+  "job_type": "admin_script",
+  "successful_runs": [
+    {
+      "run_id": "exec-1782235621796564836-f504191e83e1f021",
+      "job_id": "admin_script-scheduled-1782235621795993270-0",
+      "job_type": "admin_script",
+      "worker_id": "w-dfaf3e-2561",
+      "outcome": "success",
+      "message": "admin script executed (4 command(s))",
+      "duration_ms": 15065,
+      "completed_at": "2026-06-23T17:27:16.861719085Z"
+    },
+    {
+      "run_id": "exec-1782232653838138938-08a3c7bdc3d4271f",
+      "job_id": "admin_script-scheduled-1782232653837501326-0",
+      "job_type": "admin_script",
+      "worker_id": "w-dfaf3e-2561",
+      "outcome": "success",
+      "message": "admin script executed (4 command(s))",
+      "duration_ms": 15067,
+      "completed_at": "2026-06-23T16:37:48.904918592Z"
+    }
+  ],
+  "error_runs": null,
+  "last_updated_time": "2026-06-23T17:27:16.86278159Z"
+}

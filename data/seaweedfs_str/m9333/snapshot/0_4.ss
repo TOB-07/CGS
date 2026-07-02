@@ -1,0 +1,2 @@
+b50c1c72
+{"lastIndex":4,"lastTerm":0,"peers":[{"name":"172.18.0.2:9333.19333","connectionString":"172.18.0.2:19333"}],"state":"eyJtYXhWb2x1bWVJZCI6MCwidG9wb2xvZ3lJZCI6IjBlMDFkODg2LTFmZjQtNDU3NC05MjRjLWM0YjIxNDc4OTQ5MSJ9","path":"/data/m9333/snapshot/0_4.ss"}
