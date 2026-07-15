@@ -11,10 +11,10 @@
 </head>
 
 <body>
-    <form action="/user_reg" method="post">
+    <form action="/user_reg" method="post" id="theForm">
         <p>
             <label>User Name:</label>
-            <input type="text" name="username">
+            <input type="text" name="username" id="username">
         </p>
 
         <p>
@@ -24,12 +24,15 @@
         </p>
 
         <p>
-            <input type="submit">
-
+            <input type="submit" name="Register" id="Register">
         </p>
 
-
+        <p id="status">
+            Status:
+        </p>
     </form>
+
+    <script src="/static/script.js"></script>
 </body>
 
 </html>

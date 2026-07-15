@@ -56,3 +56,13 @@ async def reg(username: str = Form(...), password: str = Form(...)):
     )
 
     return {"message": "User Registered!"}
+
+@app.get("/check_user/{username}")
+async def check_user(username: str):
+    db_username = await app.state.conn.fetchval("SELECT username FROM users WHERE username=$1", username)
+
+    if db_username != username :
+        return {"availability" : True}
+    else :
+        return {"availability" : False}
+
