@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
         """
         CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY,
-        username VARCHAR(20) NOT NULL,
+        username VARCHAR(20) UNIQUE NOT NULL,
         password VARCHAR(20) NOT NULL
         )
         """
@@ -38,6 +38,14 @@ app = FastAPI(lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="frontend/static"))
 
+async def find_user(username: str) -> bool:
+    db_username = await app.state.conn.fetchval("SELECT username FROM users WHERE username=$1",username)
+
+    if username == db_username :
+        return True
+    else :
+        return False
+
 
 @app.get("/")
 async def webpage():
@@ -46,6 +54,9 @@ async def webpage():
 
 @app.post("/user_reg")
 async def reg(username: str = Form(...), password: str = Form(...)):
+    if await find_user(username):
+        return {"msg": "Username already exists"}
+
     await app.state.conn.execute(
         """
             INSERT INTO users (username, password)
@@ -59,10 +70,9 @@ async def reg(username: str = Form(...), password: str = Form(...)):
 
 @app.get("/check_user/{username}")
 async def check_user(username: str):
-    db_username = await app.state.conn.fetchval("SELECT username FROM users WHERE username=$1", username)
-
-    if db_username != username :
-        return {"availability" : True}
+    if await find_user(username):
+        return {"availability": False}
     else :
-        return {"availability" : False}
+        return {"availability": True}
+
 
