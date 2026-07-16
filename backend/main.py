@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import Form
+from fastapi import status
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
@@ -89,7 +91,10 @@ async def reg(username: str = Form(...), password: str = Form(...)):
         password,
     )
 
-    return {"message": "User Registered!"}
+    return RedirectResponse(
+        url= f"/?registered=true&username={username}",
+        status_code=status.HTTP_303_SEE_OTHER
+    )
 
 
 @app.get("/check_user/{username}")

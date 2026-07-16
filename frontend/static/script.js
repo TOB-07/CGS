@@ -63,4 +63,11 @@ form.addEventListener("input", () => {
 
 });
 
+const urlQueryParams = new URLSearchParams(window.location.search);
+const registered = urlQueryParams.get("registered");
+const username = urlQueryParams.get("username");
+
+if (registered === "true") {
+    status.textContent = `Status: ${username} successfully reigstered!`
+}
 
