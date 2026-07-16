@@ -38,13 +38,31 @@ app = FastAPI(lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="frontend/static"))
 
-async def find_user(username: str) -> bool:
-    db_username = await app.state.conn.fetchval("SELECT username FROM users WHERE username=$1",username)
 
-    if username == db_username :
+async def find_user(username: str) -> bool:
+    db_username = await app.state.conn.fetchval(
+        "SELECT username FROM users WHERE username=$1", username
+    )
+
+    if username == db_username:
         return True
-    else :
+    else:
         return False
+
+
+def check_password(password: str) -> str:
+    if not (8 <= len(password) <= 16):
+        return "Password must contain atleast 8-16 characters"
+    if not any(char.islower() for char in password):
+        return "Password must contain a small letter"
+    if not any(char.isupper() for char in password):
+        return "Password must contain a capital letter"
+    if not any(char.isdigit() for char in password):
+        return "Password must contain a digit"
+    if not any(not char.isalnum() for char in password):
+        return "Password must contain a special character"
+
+    return "Correct"
 
 
 @app.get("/")
@@ -57,6 +75,11 @@ async def reg(username: str = Form(...), password: str = Form(...)):
     if await find_user(username):
         return {"msg": "Username already exists"}
 
+    result = check_password(password)
+
+    if result != "Correct":
+        return {"message": result}
+
     await app.state.conn.execute(
         """
             INSERT INTO users (username, password)
@@ -68,11 +91,10 @@ async def reg(username: str = Form(...), password: str = Form(...)):
 
     return {"message": "User Registered!"}
 
+
 @app.get("/check_user/{username}")
 async def check_user(username: str):
     if await find_user(username):
         return {"availability": False}
-    else :
+    else:
         return {"availability": True}
-
-

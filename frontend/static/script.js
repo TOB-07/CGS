@@ -25,8 +25,8 @@ form.addEventListener("input", () => {
             return;
         }
 
-        if (passWord.length < 8) {
-            status.textContent = "Status: Password must be atlesat 8 characters long";
+        if (!(passWord.length >= 8 && passWord.length <= 16)) {
+            status.textContent = "Status: Password must contain 8-16 characters";
             return;
         }
         if (!/[A-Z]/.test(passWord)) {
@@ -40,13 +40,11 @@ form.addEventListener("input", () => {
         if (!/[0-9]/.test(passWord)) {
             status.textContent = "Status: Password must contatin a digit";
             return;
-        } 
+        }
         if (!/[^A-Za-z0-9]/.test(passWord)) {
             status.textContent = "Status: Password must contain a special character";
             return;
-        } 
-        
-
+        }
 
         const response = await fetch(`/check_user/${userName}`);
         const data = await response.json();
@@ -60,9 +58,8 @@ form.addEventListener("input", () => {
             return;
         }
 
-
     }, 500);
-    
+
 
 });
 
