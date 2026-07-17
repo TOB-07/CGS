@@ -1,7 +1,9 @@
 const form = document.getElementById("theForm")
-const submit = document.getElementById("Register")
+const register = document.getElementById("register")
+const login = document.getElementById("login")
 const status = document.getElementById("status")
-submit.disabled = true;
+register.disabled = true;
+login.disabled = true;
 
 let debounceTimer;
 
@@ -10,7 +12,8 @@ form.addEventListener("input", () => {
     clearTimeout(debounceTimer);
 
     debounceTimer = setTimeout(async () => {
-        submit.disabled = true;
+        register.disabled = true;
+        login.disabled = true;
         let userName = document.getElementById("username").value;
         /**  @type {string} */ // Guidance to Intellisense
         let passWord = document.getElementById("password").value;
@@ -51,10 +54,11 @@ form.addEventListener("input", () => {
 
         if (data.availability) {
             status.textContent = "Status: User name is available. Good to submit!";
-            submit.disabled = false
+            register.disabled = false;
 
         } else {
-            status.textContent = "Status: User name is already taken!";
+            status.textContent = "Status: User name is already taken! Use login!";
+            login.disabled = false;
             return;
         }
 
@@ -66,8 +70,13 @@ form.addEventListener("input", () => {
 const urlQueryParams = new URLSearchParams(window.location.search);
 const registered = urlQueryParams.get("registered");
 const username = urlQueryParams.get("username");
+const password = urlQueryParams.get("pwd");
 
 if (registered === "true") {
-    status.textContent = `Status: ${username} successfully reigstered!`
+    status.textContent = `Status: ${username} successfully reigstered!`;
+}
+
+if (password === "incorrect") {
+    status.textContent = "Status: Password is incorrect";
 }
 

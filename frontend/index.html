@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <form action="/user_reg" method="post" id="theForm">
+    <form id="theForm">
         <p>
             <label>User Name:</label>
             <input type="text" name="username" id="username" required>
@@ -24,7 +24,11 @@
         </p>
 
         <p>
-            <input type="submit" name="Register" id="Register">
+            <input type="submit" name="register" id="register" value="register" formaction="/user_reg" formmethod="post">
+        </p>
+
+        <p>
+            <input type="submit" name="login" id="login" value="login" formaction="/user_log" formmethod="post">
         </p>
 
         <p id="status">

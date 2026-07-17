@@ -71,7 +71,6 @@ def check_password(password: str) -> str:
 async def webpage():
     return FileResponse("frontend/index.html")
 
-
 @app.post("/user_reg")
 async def reg(username: str = Form(...), password: str = Form(...)):
     if await find_user(username):
@@ -103,3 +102,23 @@ async def check_user(username: str):
         return {"availability": False}
     else:
         return {"availability": True}
+    
+
+@app.get("/dashboard")
+async def dashborad():
+    return FileResponse("frontend/dashboard.html")
+
+@app.post("/user_log")
+async def login(username: str =Form(...), password:str = Form(...) ):
+    db_username = await app.state.conn.fetchval("SELECT username FROM users WHERE username=$1 AND password=$2",username,password)
+
+    if (db_username == username):
+        return RedirectResponse(
+            url = f"/dashboard?username={username}",
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+    else :
+        return RedirectResponse(
+            url="/?pwd=incorrect",
+            status_code=status.HTTP_303_SEE_OTHER
+        )
