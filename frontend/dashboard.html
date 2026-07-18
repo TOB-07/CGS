@@ -10,11 +10,22 @@
 
     <body>
         <h4 id="heading"></h4>
-        <form>
+        <form >
+            <p>
+                <label for="upload">Select a file:</label>
+                <input type="file" name="upload" id="upload" >
+            </p>
+            <p>
+                <button type="submit" formmethod="post" formaction="/user_upload" formenctype="multipart/form-data">Upload</button>
+            </p>
             <p>
                 <button type="submit" name="logout" id="logout" formmethod="get" formaction="/">logout</button>
             </p>
         </form>
+
+        <p id="status_report">
+            Status:
+        </p>
 
         <script src="/static/dashboard.js"></script>
     </body>

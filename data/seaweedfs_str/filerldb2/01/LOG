@@ -29,3 +29,15 @@
 17:25:50.408117 db@open done T·22.423343ms
 17:31:38.793126 db@close closing
 17:31:38.793243 db@close done T·116.296µs
+=============== Jul 18, 2026 (UTC) ===============
+07:48:53.183609 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+07:48:53.184015 version@stat F·[1] S·425B[425B] Sc·[0.25]
+07:48:53.184077 db@open opening
+07:48:53.184180 journal@recovery F·1
+07:48:53.184396 journal@recovery recovering @5
+07:48:53.186569 memdb@flush created L0@7 N·2 S·269B "ff\xcd..kup,d8":"ff\xcd..ads,v7"
+07:48:53.186988 version@stat F·[2] S·694B[694B] Sc·[0.50]
+07:48:53.192786 db@janitor F·4 G·0
+07:48:53.192859 db@open done T·8.75937ms
+08:01:11.481495 db@close closing
+08:01:11.481570 db@close done T·75.643µs

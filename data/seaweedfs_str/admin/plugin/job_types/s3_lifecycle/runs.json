@@ -2,6 +2,16 @@
   "job_type": "s3_lifecycle",
   "successful_runs": [
     {
+      "run_id": "exec-1784361238594637059-c3de0f5c8a8839d6",
+      "job_id": "s3_lifecycle-scheduled-1784361238594026003-0",
+      "job_type": "s3_lifecycle",
+      "worker_id": "w-dfaf3e-2561",
+      "outcome": "success",
+      "message": "s3 lifecycle daily replay completed",
+      "duration_ms": 9,
+      "completed_at": "2026-07-18T07:53:58.603893929Z"
+    },
+    {
       "run_id": "exec-1782235855784236535-0d1761a38e69c533",
       "job_id": "s3_lifecycle-scheduled-1782235855783663354-0",
       "job_type": "s3_lifecycle",
@@ -23,5 +33,5 @@
     }
   ],
   "error_runs": null,
-  "last_updated_time": "2026-06-23T17:30:55.802262325Z"
+  "last_updated_time": "2026-07-18T07:53:58.604675666Z"
 }

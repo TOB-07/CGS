@@ -30,3 +30,15 @@
 17:25:50.440390 db@open done T·24.992849ms
 17:31:38.793560 db@close closing
 17:31:38.793784 db@close done T·213.876µs
+=============== Jul 18, 2026 (UTC) ===============
+07:48:53.227473 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+07:48:53.228234 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+07:48:53.228363 db@open opening
+07:48:53.228528 journal@recovery F·1
+07:48:53.250339 journal@recovery recovering @6
+07:48:53.253355 memdb@flush created L0@8 N·16 S·875B "\x89\a\xbf..son,v46":"\x89\a\xbf..son,v37"
+07:48:53.253841 version@stat F·[3] S·2KiB[2KiB] Sc·[0.75]
+07:48:53.259478 db@janitor F·5 G·0
+07:48:53.259530 db@open done T·31.143412ms
+08:01:11.481670 db@close closing
+08:01:11.481736 db@close done T·65.906µs

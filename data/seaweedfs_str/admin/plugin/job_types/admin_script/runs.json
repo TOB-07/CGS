@@ -2,6 +2,16 @@
   "job_type": "admin_script",
   "successful_runs": [
     {
+      "run_id": "exec-1784360999594865380-fde7aa4d5bd7505a",
+      "job_id": "admin_script-scheduled-1784360999594055113-0",
+      "job_type": "admin_script",
+      "worker_id": "w-dfaf3e-2561",
+      "outcome": "success",
+      "message": "admin script executed (4 command(s))",
+      "duration_ms": 15117,
+      "completed_at": "2026-07-18T07:50:14.711159942Z"
+    },
+    {
       "run_id": "exec-1782235621796564836-f504191e83e1f021",
       "job_id": "admin_script-scheduled-1782235621795993270-0",
       "job_type": "admin_script",
@@ -23,5 +33,5 @@
     }
   ],
   "error_runs": null,
-  "last_updated_time": "2026-06-23T17:27:16.86278159Z"
+  "last_updated_time": "2026-07-18T07:50:14.712814622Z"
 }

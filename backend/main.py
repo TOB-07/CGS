@@ -4,10 +4,12 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import Form
 from fastapi import status
+from fastapi import UploadFile, File
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
 import asyncpg
+import httpx
 
 load_dotenv()
 
@@ -121,4 +123,29 @@ async def login(username: str =Form(...), password:str = Form(...) ):
         return RedirectResponse(
             url="/?pwd=incorrect",
             status_code=status.HTTP_303_SEE_OTHER
+        )
+
+@app.post("/user_upload")
+async def upload(upload: UploadFile = File(...)):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"http://localhost:8888/upload/{upload.filename}",
+            files={
+                "file": (
+                    upload.filename,
+                    upload.file,
+                    upload.content_type,
+                )
+            },
+        )
+    
+    if response.is_success:
+        return RedirectResponse(
+            url="/dashboard?status=success",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    else:
+        return RedirectResponse(
+            url="/dashboard?status=failure",
+            status_code=status.HTTP_303_SEE_OTHER,
         )
