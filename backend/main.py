@@ -82,6 +82,7 @@ async def reg(username: str = Form(...), password: str = Form(...)):
 
     if result != "Correct":
         return {"message": result}
+    
 
     await app.state.conn.execute(
         """
