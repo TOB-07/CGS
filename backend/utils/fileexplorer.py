@@ -1,11 +1,13 @@
-from pathlib import Path
-from datetime import datetime
-from dotenv import load_dotenv
 import hashlib
-import os
 import json
+import os
+from datetime import datetime
+from pathlib import Path
 
-class FileExplorer():
+from dotenv import load_dotenv
+
+
+class FileExplorer:
     def __init__(self):
         self.folder_paths = []
         self.file_paths = []
