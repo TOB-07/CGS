@@ -1,20 +1,0 @@
-      56
-	raft:join"G{"name":"172.18.0.2:9333.19333","connectionString":"172.18.0.2:19333"}
-       c
-raft:nop      33
-MaxVolumeId""{"maxVolumeId":0,"topologyId":""}
-      57
-MaxVolumeId"F{"maxVolumeId":0,"topologyId":"0e01d886-1ff4-4574-924c-c4b214789491"}
-      57
-MaxVolumeId"F{"maxVolumeId":1,"topologyId":"0e01d886-1ff4-4574-924c-c4b214789491"}
-       e
-raft:nop      59
-MaxVolumeId"F{"maxVolumeId":0,"topologyId":"0e01d886-1ff4-4574-924c-c4b214789491"}
-       e
-raft:nop      59
-	MaxVolumeId"F{"maxVolumeId":0,"topologyId":"0e01d886-1ff4-4574-924c-c4b214789491"}
-      59
-
-MaxVolumeId"F{"maxVolumeId":0,"topologyId":"0e01d886-1ff4-4574-924c-c4b214789491"}
-       e
-raft:nop

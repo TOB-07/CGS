@@ -3,3 +3,4 @@ CGS.code-workspace
 __pycache__
 .env
 *.bak
+data/
