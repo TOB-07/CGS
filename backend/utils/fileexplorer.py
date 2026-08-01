@@ -1,5 +1,6 @@
 import hashlib
 import json
+import mimetypes
 import os
 from datetime import datetime
 from pathlib import Path
@@ -10,10 +11,22 @@ from dotenv import load_dotenv
 class FileExplorer:
     def __init__(self):
         self.folder_paths = []
-        self.file_paths = []
         self.folder_names = []
+        self.file_paths = []
+        self.file_names = []
+        self.file_data = []
+        self.file_type = []
         self.save_hashes = []
         self.modified_at = []
+    
+    def _content_type(self, path: Path):
+        content_type, _ = mimetypes.guess_type(path)
+
+        if content_type is None:
+            content_type = "data file"
+        
+        return content_type
+
     
     def find_path(self,master_folder: Path):
         for folder in master_folder.rglob("*"):
@@ -21,10 +34,14 @@ class FileExplorer:
                 self.folder_paths.append(str(folder))
                 self.folder_names.append(folder.name)
             elif folder.is_file():
+                content_type = self._content_type(folder)
+                self.file_type.append(content_type)
                 self.file_paths.append(str(folder))
+                self.file_names.append(folder.name)
                 self.modified_at.append(str(datetime.fromtimestamp(folder.stat().st_mtime)))
                 with folder.open("rb") as file:
                     data = file.read()
+                self.file_data.append(data)
                 self.save_hashes.append(hashlib.sha256(data).hexdigest())
 
 def main():
@@ -42,6 +59,9 @@ def main():
     fe.find_path(Path(config["path"]))
 
     print(f"File paths: {fe.file_paths}")
+    print(f"File names: {fe.file_names}")
+    print(f"File content: {fe.file_data}" )
+    print(f"File type: {fe.file_type} ")
     print(f"Folder names: {fe.folder_names}")
     print(f"Save hashes: {fe.save_hashes}")
 
