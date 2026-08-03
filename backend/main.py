@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
         modified_at TIMESTAMPTZ NOT NULL,
         path VARCHAR(255) NOT NULL,
         save_hash VARCHAR(255) NOT NULL,
-        version INTEGER NOT NULL);
+        version INTEGER NOT NULL DEFAULT 1);
          
         CREATE TABLE IF NOT EXISTS devices(
         device_id SERIAL PRIMARY KEY,

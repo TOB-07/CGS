@@ -2,7 +2,7 @@ import hashlib
 import json
 import mimetypes
 import os
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -38,7 +38,7 @@ class FileExplorer:
                 self.file_type.append(content_type)
                 self.file_paths.append(str(folder))
                 self.file_names.append(folder.name)
-                self.modified_at.append(str(datetime.fromtimestamp(folder.stat().st_mtime)))
+                self.modified_at.append(datetime.fromtimestamp(folder.stat().st_mtime,tz=UTC))
                 with folder.open("rb") as file:
                     data = file.read()
                 self.file_data.append(data)

@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+pool = None
+
 async def connect():
     global pool
 
