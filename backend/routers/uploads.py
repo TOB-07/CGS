@@ -1,14 +1,21 @@
+import os
+
 import httpx
+from dotenv import load_dotenv
 from fastapi import APIRouter, File, UploadFile, status
 from fastapi.responses import RedirectResponse
 
+load_dotenv()
+
+SEAWEEDFS = os.getenv("SEAWEEDFS")
+
 router = APIRouter()
 
-@router.post("/user_upload")
-async def upload(upload: UploadFile = File(...)):
+@router.post("/user_file_upload")
+async def upload_file(upload: UploadFile = File(...)):
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://localhost:8888/upload/{upload.filename}",
+            f"{SEAWEEDFS}/upload/{upload.filename}",
             files={
                 "file": (
                     upload.filename,

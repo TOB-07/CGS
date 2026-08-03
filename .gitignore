@@ -4,3 +4,4 @@ __pycache__
 .env
 *.bak
 data/
+MGS/
