@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, File, UploadFile, status
 from fastapi.responses import RedirectResponse
 
+from backend.services.uploads import Worker
+
 load_dotenv()
 
 SEAWEEDFS = os.getenv("SEAWEEDFS")
@@ -35,3 +37,13 @@ async def upload_file(upload: UploadFile = File(...)):
                 url="/dashboard?status=failure",
                 status_code = status.HTTP_303_SEE_OTHER,
             )
+
+@router.post("/system_upload")
+async def upload():
+    Worker().the_work()
+    return RedirectResponse(
+        url="/dashboard?status=startedsync",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+

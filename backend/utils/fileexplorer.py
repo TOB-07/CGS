@@ -2,7 +2,7 @@ import hashlib
 import json
 import mimetypes
 import os
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -26,23 +26,36 @@ class FileExplorer:
             content_type = "data file"
         
         return content_type
+    
+    def explore_file(self, file_path: Path):
+        content_type = self._content_type(file_path)
+        self.file_type.append(content_type)
+        self.file_paths.append(str(file_path))
+        self.file_names.append(file_path.name)
+        self.modified_at.append(str(datetime.fromtimestamp(file_path.stat().st_mtime)))
+        with file_path.open("rb") as file:
+            data = file.read()
+        self.file_data.append(data)
+        self.save_hashes.append(hashlib.sha256(data).hexdigest())    
 
     
-    def find_path(self,master_folder: Path):
+    def explore_folder(self,master_folder: Path):
         for folder in master_folder.rglob("*"):
             if folder.is_dir():
                 self.folder_paths.append(str(folder))
                 self.folder_names.append(folder.name)
             elif folder.is_file():
-                content_type = self._content_type(folder)
-                self.file_type.append(content_type)
-                self.file_paths.append(str(folder))
-                self.file_names.append(folder.name)
-                self.modified_at.append(datetime.fromtimestamp(folder.stat().st_mtime,tz=UTC))
-                with folder.open("rb") as file:
-                    data = file.read()
-                self.file_data.append(data)
-                self.save_hashes.append(hashlib.sha256(data).hexdigest())
+                self.explore_file(folder)
+    
+    def clear(self):
+        self.folder_paths = []
+        self.folder_names = []
+        self.file_paths = []
+        self.file_names = []
+        self.file_data = []
+        self.file_type = []
+        self.save_hashes = []
+        self.modified_at = []
 
 def main():
     load_dotenv()

@@ -5,58 +5,151 @@ from pathlib import Path
 
 import httpx
 from dotenv import load_dotenv
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
+from watchdog.observers import Observer
 
-from backend.database import db
-from backend.database.uploads import insert_games, insert_saves
 from backend.utils.fileexplorer import FileExplorer
 
 load_dotenv()
 
-CONFIG_PATH = os.getenv("CONFIG_FILE")
+config_file_path = os.getenv("CONFIG_FILE")
 SEAWEEDFS = os.getenv("SEAWEEDFS")
 
-if os.path.exists(CONFIG_PATH):
-    with open(CONFIG_PATH,"r") as f:
-        config_file = json.load(f)
+if os.path.exists(config_file_path):
+    with open(config_file_path,"r") as file:
+        config = json.load(file)
 
-async def auto_upload():
-    fe = FileExplorer()
-    fe.find_path(Path(config_file["path"]))
 
+fe = FileExplorer()
+
+async def upload(fe: FileExplorer):
+    success = True
     async with httpx.AsyncClient() as client:
-        for file_path, file_name, file_data, content_type, folder_name, save_hash, modified_at in zip(
-            fe.file_paths,
-            fe.file_names,
-            fe.file_data,
-            fe.file_type,
-            fe.folder_names,
-            fe.save_hashes,
-            fe.modified_at,
+        for file_path, name, data, content_type in zip(
+            fe.file_paths, fe.file_names, fe.file_data, fe.file_type,
         ):
             response = await client.post(
                 f"{SEAWEEDFS}/upload/{file_path}",
                 files={
-                    "file": (
-                        file_name,
-                        file_data,
-                        content_type,
-                    )
+                    "file": (name, data, content_type)
                 },
             )
 
-            if response.is_success:
-                async with db.pool.acquire() as conn:
-                    await insert_games(folder_name, conn)
-                    game_id = await conn.fetchval("SELECT game_id FROM games WHERE game_name=$1",folder_name)
-                    username = "john"
-                    user_id = await conn.fetchval("SELECT user_id FROM users WHERE username=$1",username)
-                    await insert_saves(modified_at, file_path, save_hash, game_id, user_id, conn)
+            if not response.is_success:
+                print(f"{name} failed to upload: {response.status_code}")
+                success = False
+
+    return success
+
+async def delete_file(file_path : str):
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(f"{SEAWEEDFS}/upload/{file_path}")
+
+        if not response.is_success:
+            print(f"Failed to delete {file_path}: {response.status_code}")
+
+async def delete_folder(folder_path: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(f"{SEAWEEDFS}/upload/{folder_path}",params={"recursive": "true"})
+
+        if not response.is_success:
+            print(f"Failed to delete folder {folder_path} : {response.status_code}" )
+
+class TheEventHandler(FileSystemEventHandler):
+    def on_created(self, event: FileSystemEvent, verbose = False):
+        if not event.is_directory:
+            fe.explore_file(Path(event.src_path))
+            asyncio.run(upload(fe))
+            if verbose:
+                print(f"File Created: {event.src_path}")
+                print("------------------------------------------")
+        else:
+            if verbose:
+                fe.explore_folder(Path(event.src_path))
+                print(f"Folder created: {event.src_path}")
+                print(f"Folder names: {fe.folder_names}")
+                print(f"Folder paths: {fe.folder_paths}")
+                print("------------------------------------------")            
+
+        fe.clear()
+
+    def on_modified(self, event: FileSystemEvent, verbose = False):
+        if not event.is_directory:
+            fe.explore_file(Path(event.src_path))
+            asyncio.run(upload(fe))
+            if verbose:
+                print(f"File Created: {event.src_path}")
+                print("------------------------------------------")
             else:
-                print(f"{file_name} failed to upload : {response.status_code}")
+                if verbose:
+                    fe.explore_folder(Path(event.src_path))
+                    print(f"Folder created: {event.src_path}")
+                    print(f"Folder names: {fe.folder_names}")
+                    print(f"Folder paths: {fe.folder_paths}")
+                    print("------------------------------------------")            
+
+        fe.clear()
+
+    def on_moved(self, event: FileSystemEvent, verbose = False):
+        if not event.is_directory:
+            fe.explore_file(Path(event.dest_path))
+            upload_status = asyncio.run(upload(fe))
+
+            if upload_status:
+                asyncio.run(delete_file(event.src_path))
+
+            if verbose:
+                print(f"file moved: {event.src_path} -> {event.dest_path}")
+
+        else:
+            upload_status = fe.explore_folder(Path(event.dest_path))
+
+            if upload_status:
+                asyncio.run(delete_folder(event.src_path))
+
+            if verbose:
+                print(f"Folder moved: {event.src_path} -> {event.dest_path}")
+                print(f"Folder names: {fe.folder_names}")
+                print(f"Folder paths: {fe.folder_paths}")
+                print("------------------------------------------")
+
+        fe.clear()
+
+
+
+    def on_deleted(self, event: FileSystemEvent, verbose = False):
+        if not event.is_directory:
+            asyncio.run(delete_file(event.src_path))
+            if verbose:
+                print(f"Deleted file: {event.src_path}")
+                print("------------------------------------------")
+        else:
+            asyncio.run(delete_folder(event.src_path))
+            if verbose:
+                print(f"Deleted folder: {event.src_path}")
+                print("------------------------------------------")
         
 
-async def main():
-    await auto_upload()
+class Worker:
+    def __init__(self):
+        self.observer = Observer()
+        self.event_handler = TheEventHandler()
+        self.path = config["path"]
+
+    def the_work(self):
+        
+        self.observer.schedule(self.event_handler,self.path,recursive=True)
+        self.observer.start()
+
+        try:
+            while self.observer.is_alive():
+                self.observer.join(10)
+        finally:
+            self.observer.stop()
+            self.observer.join()
+
+def main():
+    Worker().the_work()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

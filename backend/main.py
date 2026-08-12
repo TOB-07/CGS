@@ -4,7 +4,6 @@ from fastapi import FastAPI
 
 from backend.database.db import connect, disconnect, get_db
 from backend.routers import uploads, users, webpage
-from backend.services.uploads import auto_upload
 
 
 @asynccontextmanager
@@ -36,8 +35,6 @@ async def lifespan(app: FastAPI):
         device_name VARCHAR(30) NOT NULL,
         platform VARCHAR(30) NOT NULL,
         user_id INTEGER NOT NULL REFERENCES users(user_id)); """)
-
-    await auto_upload()
 
     yield
 
