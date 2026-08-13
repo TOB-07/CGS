@@ -102,7 +102,8 @@ class TheEventHandler(FileSystemEventHandler):
                 print(f"file moved: {event.src_path} -> {event.dest_path}")
 
         else:
-            upload_status = fe.explore_folder(Path(event.dest_path))
+            fe.explore_folder(Path(event.dest_path))
+            upload_status = asyncio.run(upload(fe))
 
             if upload_status:
                 asyncio.run(delete_folder(event.src_path))
@@ -136,17 +137,26 @@ class Worker:
         self.event_handler = TheEventHandler()
         self.path = config["path"]
 
-    def the_work(self):
-        
+
+    def the_start(self):
         self.observer.schedule(self.event_handler,self.path,recursive=True)
         self.observer.start()
 
-        try:
-            while self.observer.is_alive():
-                self.observer.join(10)
-        finally:
-            self.observer.stop()
-            self.observer.join()
+    def the_stop(self):
+        self.observer.stop()
+        self.observer.join()
+
+    # def the_work(self):
+        
+    #     self.observer.schedule(self.event_handler,self.path,recursive=True)
+    #     self.observer.start()
+
+    #     try:
+    #         while self.observer.is_alive():
+    #             self.observer.join(10)
+    #     finally:
+    #         self.observer.stop()
+    #         self.observer.join()
 
 def main():
     Worker().the_work()
