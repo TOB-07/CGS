@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -9,6 +10,7 @@ from backend.routers import uploads, users, webpage
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect()
+    app.state.loop = asyncio.get_running_loop()
 
     async for conn in get_db():
         await conn.execute("""CREATE TABLE IF NOT EXISTS users(
@@ -22,12 +24,11 @@ async def lifespan(app: FastAPI):
          
         CREATE TABLE IF NOT EXISTS saves(
         save_id SERIAL PRIMARY KEY,
-        game_id INTEGER NOT NULL REFERENCES games(game_id),
-        user_id INTEGER NOT NULL REFERENCES users(user_id),
-        modified_at TIMESTAMPTZ NOT NULL,
+        game_id INTEGER NOT NULL REFERENCES games(game_id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+        modified_at VARCHAR(100) NOT NULL,
         path VARCHAR(255) NOT NULL,
-        save_hash VARCHAR(255) NOT NULL,
-        version INTEGER NOT NULL DEFAULT 1);
+        save_hash VARCHAR(255) NOT NULL);
          
         CREATE TABLE IF NOT EXISTS devices(
         device_id SERIAL PRIMARY KEY,

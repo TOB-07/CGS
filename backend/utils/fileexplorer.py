@@ -36,7 +36,7 @@ class FileExplorer:
         with file_path.open("rb") as file:
             data = file.read()
         self.file_data.append(data)
-        self.save_hashes.append(hashlib.sha256(data).hexdigest())    
+        self.save_hashes.append(hashlib.md5(data).hexdigest())    
 
     
     def explore_folder(self,master_folder: Path):
@@ -48,6 +48,15 @@ class FileExplorer:
                 self.explore_file(folder)
     
     def clear(self):
+        print("Before clear:")
+        print(f"self.folder_paths = {self.folder_paths}")
+        print(f"self.folder_names = {self.folder_names}")
+        print(f"self.file_paths = {self.file_paths}")
+        print(f"self.file_names = {self.file_names}")
+        print(f"self.file_data = {self.file_data}")
+        print(f"self.file_type = {self.file_type}")
+        print(f"self.save_hashes = {self.save_hashes}")
+        print(f"self.modified_at = {self.modified_at}")
         self.folder_paths = []
         self.folder_names = []
         self.file_paths = []
@@ -56,6 +65,15 @@ class FileExplorer:
         self.file_type = []
         self.save_hashes = []
         self.modified_at = []
+        print("After clear:")
+        print(f"self.folder_paths = {self.folder_paths}")
+        print(f"self.folder_names = {self.folder_names}")
+        print(f"self.file_paths = {self.file_paths}")
+        print(f"self.file_names = {self.file_names}")
+        print(f"self.file_data = {self.file_data}")
+        print(f"self.file_type = {self.file_type}")
+        print(f"self.save_hashes = {self.save_hashes}")
+        print(f"self.modified_at = {self.modified_at}")
 
 def main():
     load_dotenv()
@@ -69,7 +87,7 @@ def main():
         return ("Config doesn't exists!")
 
     fe = FileExplorer()
-    fe.find_path(Path(config["path"]))
+    fe.explore_folder(Path(config["path"]))
 
     print(f"File paths: {fe.file_paths}")
     print(f"File names: {fe.file_names}")
