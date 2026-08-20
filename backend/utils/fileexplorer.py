@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import json
 import mimetypes
@@ -36,7 +37,7 @@ class FileExplorer:
         with file_path.open("rb") as file:
             data = file.read()
         self.file_data.append(data)
-        self.save_hashes.append(hashlib.md5(data).hexdigest())    
+        self.save_hashes.append(base64.b64encode(hashlib.md5(data).digest()).decode("ascii"))    
 
     
     def explore_folder(self,master_folder: Path):
@@ -74,6 +75,7 @@ class FileExplorer:
         print(f"self.file_type = {self.file_type}")
         print(f"self.save_hashes = {self.save_hashes}")
         print(f"self.modified_at = {self.modified_at}")
+        print("------------------------------------------")
 
 def main():
     load_dotenv()
