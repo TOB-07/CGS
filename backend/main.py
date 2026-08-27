@@ -39,6 +39,7 @@ async def lifespan(app: FastAPI):
 
     yield
 
+
     await disconnect()
 
 

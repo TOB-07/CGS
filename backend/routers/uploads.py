@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, File, Request, UploadFile, status
 from fastapi.responses import RedirectResponse
 
+from backend.services.sync import the_sync
 from backend.services.uploads import Worker
 
 worker = None
@@ -44,6 +45,7 @@ async def upload_file(upload: UploadFile = File(...)):
 async def upload_start(request: Request):
     global worker
     if worker is None or not worker.observer.is_alive():
+        await the_sync(user_id = 1)
         worker = Worker(loop=request.app.state.loop)
         worker.the_start()
     
