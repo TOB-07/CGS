@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   seaweedfs:
     image: chrislusf/seaweedfs:latest
@@ -13,4 +11,12 @@ services:
     volumes:
       - ./data/seaweedfs_str/:/data
 
+    env_file: .env
+    restart: unless-stopped
+  
+  seaweedfs-remotesync:
+    image: chrislusf/seaweedfs:latest
+    depends_on:
+      - seaweedfs
+    command: ["filer.remote.sync", "-filer=seaweedfs:8888", "-dir=/upload/MGS"]
     restart: unless-stopped
